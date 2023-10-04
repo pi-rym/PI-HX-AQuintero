@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import Cards from './components/Cards.jsx';
+import Nav from './components/Nav';
+import { useState } from 'react';
+import axios from 'axios';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // React.useState()
 
+  const [characters, setCharacters] = useState([]);
+  const APIKEY = 'pi-hx-aquintero';
+
+  const onSearch = (id) => {
+    axios(`https://rym2.up.railway.app/api/character/${id}?key=${APIKEY}`)
+      .then(({ data }) => {
+        if (data.name) {
+          setCharacters((oldCharacters) => [...oldCharacters, data]);
+        } else {
+          window.alert('Personaje no encontrado');
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const onClose = (id) => {
+    setCharacters(characters.filter((char) => char.id !== Number(id)));
+  };
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className='App'>
+      <Nav onSearch={onSearch} />
+      <hr />
+      <Cards characters={characters} onClose={onClose} />
+      <hr />
+    </div>
+  );
 }
 
-export default App
+export default App;
