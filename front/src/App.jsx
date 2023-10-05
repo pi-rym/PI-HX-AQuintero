@@ -1,12 +1,15 @@
-import './App.css';
-import Cards from './components/Cards.jsx';
-import Nav from './components/Nav';
-import { useState } from 'react';
 import axios from 'axios';
+import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+
+import About from './components/About';
+import Cards from './components/Cards.jsx';
+import Detail from './components/Detail';
+import Error from './components/Error';
+import Nav from './components/Nav';
+import './App.css';
 
 function App() {
-  // React.useState()
-
   const [characters, setCharacters] = useState([]);
   const APIKEY = 'pi-hx-aquintero';
 
@@ -28,9 +31,15 @@ function App() {
   return (
     <div className='App'>
       <Nav onSearch={onSearch} />
-      <hr />
-      <Cards characters={characters} onClose={onClose} />
-      <hr />
+      <Routes>
+        <Route
+          path='/home'
+          element={<Cards characters={characters} onClose={onClose} />}
+        />
+        <Route path='/about' element={<About />} />
+        <Route path='/detail/:id' element={<Detail />} />
+        <Route path='*' element={<Error />} />
+      </Routes>
     </div>
   );
 }
