@@ -1,14 +1,13 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
-import About from './components/About';
-import Cards from './components/Cards.jsx';
-import Detail from './components/Detail';
-import Error from './components/Error';
-import Form from './components/Form';
-import Nav from './components/Nav';
-import './App.css';
+import About from './components/About/About';
+import Cards from './components/Cards/Cards.jsx';
+import Detail from './components/Detail/Detail';
+import Error from './components/Error/Error';
+import Form from './components/Form/Form';
+import Nav from './components/Nav/Nav';
 
 function App() {
   const navigate = useNavigate();
@@ -24,11 +23,16 @@ function App() {
       setAccess(true);
       navigate('/home');
     } else {
-      alert('Datos incorrectos. Intenta de nuevo')
+      alert('Datos incorrectos. Intenta de nuevo');
     }
   }
 
-  useEffect(() => {
+  function logout() {
+    setAccess(false);
+    navigate('/');
+  }
+
+  useMemo(() => {
     !access && navigate('/');
   }, [access]);
 
@@ -49,7 +53,7 @@ function App() {
   };
   return (
     <div className='App'>
-      {pathname !== '/' && <Nav onSearch={onSearch} />}
+      {pathname !== '/' && <Nav onSearch={onSearch} logout={logout} />}
       <Routes>
         <Route path='/' element={<Form login={login} />} />
         <Route

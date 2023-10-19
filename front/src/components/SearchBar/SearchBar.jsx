@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styles from './SearchBar.module.scss';
 
 export default function SearchBar({ onSearch }) {
   const [id, setId] = useState('');
@@ -13,15 +14,24 @@ export default function SearchBar({ onSearch }) {
     setId('');
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch(id);
+    }
+  };
+
   return (
-    <div>
+    <div className={styles.searchbar}>
       <input
         type='search'
         value={id}
         placeholder='Ingresa un ID por favor'
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
-      <button onClick={() => handleSearch(id)}>Agregar</button>
+      <button className={styles.searchbutton} onClick={() => handleSearch(id)}>
+        🔍
+      </button>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import validation from '../utils/validation';
+import validation from '../../utils/validation'
+import styles from "./Form.module.css";
+
 
 function Form({ login }) {
   const [userData, setUserData] = useState({
@@ -32,8 +34,13 @@ function Form({ login }) {
   };
 
   return (
-    <div>
-      <form>
+    <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}>
+      <form className={styles.container}>
         <label>EMAIL</label>
         <input
           placeholder='email'
@@ -41,6 +48,7 @@ function Form({ login }) {
           value={userData.email}
           name='email'
           onChange={handleChange}
+          className={errors.email && styles.warning}
         />
         <p>{errors.email}</p>
 
@@ -54,7 +62,7 @@ function Form({ login }) {
         />
         <p>{errors.password}</p>
 
-        <button type='submit' onClick={handleSubmit}>
+        <button className={styles.boton} type='submit' onClick={handleSubmit}>
           Submit
         </button>
       </form>

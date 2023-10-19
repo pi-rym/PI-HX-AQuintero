@@ -1,0 +1,27 @@
+.searchbar {
+  background-color: white;
+  position: relative;
+  width: 180px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+
+  input {
+    padding-left: 10px;
+    border: none;
+    background-color: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .searchbutton {
+    cursor: pointer;
+    position: absolute;
+    border: none;
+    background-color: inherit;
+    right: 0;
+  }
+}

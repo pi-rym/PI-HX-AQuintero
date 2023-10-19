@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import styles from './Detail.module.css';
 
 function Detail() {
   const APIKEY = 'pi-hx-aquintero';
@@ -23,15 +24,23 @@ function Detail() {
   }, [id]);
 
   return (
-    <div>
+    <div className={styles.container}>
       {character.name && (
         <>
-          <h2>{character.name}</h2>
-          <img src={character.image} alt={character.name} />
-          <h2>{character.status}</h2>
-          <h2>{character.species}</h2>
-          <h2>{character.gender}</h2>
-          <h2>{character.origin?.name}</h2>
+          <div className={styles.personcontainer}>
+            <h1>{character.name}</h1>
+            <img
+              className={styles.imagen}
+              src={character.image}
+              alt={`${character.name}`}
+            />
+            <div className={styles.info}>
+              <h2>STATUS: {character.status}</h2>
+              <h2>SPECIES: {character.species}</h2>
+              <h2>GENDER: {character.gender}</h2>
+              <h2>ORIGIN: {character.origin?.name}</h2>
+            </div>
+          </div>
         </>
       )}
     </div>
