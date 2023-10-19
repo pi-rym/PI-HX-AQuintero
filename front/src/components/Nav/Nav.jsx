@@ -22,6 +22,7 @@ function Nav({ onSearch, logout }) {
         </div>
 
         <SearchBar onSearch={onSearch} />
+        <Link to='/favorites'><button>Favorites</button></Link>
         <button className={styles.boton} onClick={logout}>Logout</button>
       </div>
     </div>

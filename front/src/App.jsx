@@ -8,6 +8,7 @@ import Detail from './components/Detail/Detail';
 import Error from './components/Error/Error';
 import Form from './components/Form/Form';
 import Nav from './components/Nav/Nav';
+import Favorites from './components/Favorites/Favorites';
 
 function App() {
   const navigate = useNavigate();
@@ -61,6 +62,7 @@ function App() {
           element={<Cards characters={characters} onClose={onClose} />}
         />
         <Route path='/about' element={<About />} />
+        <Route path='/favorites' element={<Favorites />} />
         <Route path='/detail/:id' element={<Detail />} />
         <Route path='*' element={<Error />} />
       </Routes>
