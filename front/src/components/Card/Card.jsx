@@ -39,6 +39,11 @@ export function Card({
     }
   };
 
+  const handleRemoveFav = (id) => {
+    onClose(id);
+    removeFav(id);
+  }
+
   useEffect(() => {
     myFavorites?.forEach((fav) => {
        if (fav.id === id) {
@@ -55,7 +60,7 @@ export function Card({
         ) : (
           <button onClick={handleFavorite}>🤍</button>
         )}
-        <button className={styles.boton} onClick={() => onClose(id)}>
+        <button className={styles.boton} onClick={() => handleRemoveFav(id)}>
           X
         </button>
       </div>
