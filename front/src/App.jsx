@@ -16,16 +16,22 @@ function App() {
   const [access, setAccess] = useState(false);
   const [characters, setCharacters] = useState([]);
   const APIKEY = 'pi-hx-aquintero';
-  const EMAIL = 'mail@mail.com';
-  const PASSWORD = 'hola123';
+  // const EMAIL = 'mail@mail.com';
+  // const PASSWORD = 'hola123';
+  const URL = 'http://localhost:3001/rickandmorty/';
 
-  function login(userData) {
-    if (userData.password === PASSWORD && userData.email === EMAIL) {
-      setAccess(true);
-      navigate('/home');
-    } else {
-      alert('Datos incorrectos. Intenta de nuevo');
-    }
+  function login({ email, password }) {
+    axios(`${URL}login?email=${email}&password=${password}`).then(
+      ({ data }) => {
+        const { access } = data;
+        setAccess(access);
+        if (access) {
+          navigate('/home');
+        } else {
+          alert('Datos incorrectos. Intenta de nuevo');
+        }
+      }
+    );
   }
 
   function logout() {
@@ -33,7 +39,7 @@ function App() {
     navigate('/');
   }
 
-  useMemo(() => {
+  useEffect(() => {
     !access && navigate('/');
   }, [access]);
 
@@ -50,8 +56,9 @@ function App() {
   };
 
   const onClose = (id) => {
-    setCharacters(characters.filter((char) => char.id !== Number(id)));
+    setCharacters(characters.filter((char) => Number(char.id) !== Number(id)));
   };
+
   return (
     <div className='App'>
       {pathname !== '/' && <Nav onSearch={onSearch} logout={logout} />}

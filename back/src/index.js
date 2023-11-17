@@ -1,28 +1,38 @@
-const http = require("http");
-const data = require("./utils/data");
-const getCharById = require("./controllers/getCharById");
+const cors = require('cors');
+const express = require('express');
+const morgan = require('morgan');
+const router = require('./routes/index');
+const PORT = 3001;
 
-http
-  .createServer((req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+const server = express();
 
-    // if (req.url.includes("/rickandmorty/character")) {
-    //   const id = req.url.split("/").pop();
-    //   const character = data.find((char) => char.id === Number(id));
+server.use(morgan('dev'));
 
-    //   res.writeHead(200, { "Content-Type": "application/json" });
-    //   res.end(JSON.stringify(character));
-    // }
+// server.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Credentials', 'true');
+//   res.header(
+//      'Access-Control-Allow-Headers',
+//      'Origin, X-Requested-With, Content-Type, Accept'
+//   );
+//   res.header(
+//      'Access-Control-Allow-Methods',
+//      'GET, POST, OPTIONS, PUT, DELETE'
+//   );
+//   next();
+// });
 
-    const { url } = req;
+server.use(cors());
 
-    if (url.includes("/rickandmorty/character")) {
-      const id = url.split("/").pop();
-      getCharById(res, id);
-    }
+server.use(express.json());
 
-    //"/rickandmorty/character/1" => ['rickandmorty', 'character', 1] => 1
-  })
-  .listen(3001, () => {
-    console.log("Estamos activos");
-  });
+server.use('/rickandmorty', router);
+
+/* 
+request --> morgan --> cors --> express.json() --> ruta (path)
+req           req       req         req
+*/
+
+server.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});
