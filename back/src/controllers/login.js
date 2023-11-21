@@ -8,9 +8,12 @@ const login = (req, res) => {
   );
 
   if (userValid) {
-    return res.json({ access: true });
+    return res.status(200).json({ access: true });
   }
-  return res.json({ access: false });
+  return res.status(403).json({
+    access: false,
+    message: 'Usuario o contraseña invalida. Try again',
+  });
 
   /* 
   return userValid ? res.json({ access: true }) :
