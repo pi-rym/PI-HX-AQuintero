@@ -4,24 +4,31 @@ import { ADD_FAV, REMOVE_FAV, FILTER_FAV, ORDER_FAV } from './action-types';
 const URL = 'http://localhost:3001/rickandmorty/fav';
 
 export const addFav = (character) => {
-  return (dispatch) => {
-    axios.post(`${URL}`, character).then(({ data }) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.post(`${URL}`, character);
+      // console.log(data)
       return dispatch({
         type: ADD_FAV,
         payload: data,
       });
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
 
 export const removeFav = (id) => {
-  return (dispatch) => {
-    axios.delete(`${URL}/${id}`).then(({ data }) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.delete(`${URL}/${id}`);
       return dispatch({
         type: REMOVE_FAV,
         payload: data,
       });
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
 

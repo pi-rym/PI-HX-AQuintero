@@ -1,4 +1,4 @@
-# **💪 HW5 | Express - Integration**
+# **💪 HW3 | Sequelize Part 2 - Integration**
 
 ## **🕒 DURACIÓN ESTIMADA**
 
@@ -16,214 +16,183 @@ XX minutos
 
 ## **📝 INTRODUCCIÓN**
 
-En esta homework crearemos un servidor con la librería de express. A su vez crearemos distintas rutas, y también simularemos una base de datos apra nuestros personajes favoritos.
+En esta homework nos encargaremos de terminar de integrar una base de datos en nuestro proyecto de Rick and Morty componiendo nuevos controladores.
 
-Esta vez las rutas que crearemos son:
-
--  **`GET getCharById`**: esta ruta obtendrá personajes de la API mediante su **id**.
--  **`GET login`**: esta ruta es la que le dará o no acceso al usuario para usar la aplicación.
--  **`POST postFav`**: esta ruta guardará en nuestro servidor a nuestros personajes favoritos.
--  **`DELETE deleteFav`**: esta ruta eliminará a un personaje de nuestros favoritos.
-
-<br />
+</br >
 
 ---
 
 ## **📋 INSTRUCCIONES**
 
-### **👩‍💻 EJERCICIO 1 | Servidor**
+Para esta primera homework ya no necesitaremos algunos archivos y carpetas, por lo que te invitamos a eliminar los siguiente:
 
-Instala la librería **`express`**. Luego dirígete al archivo **`index.js`** y elimina todo su contenido. Ahora crearemos el servidor con esta librería.
-
-1. Dentro del archivo **index.js** importa **`express`** e inicializa un nuevo servidor en el puerto 3001. Esta sería una forma de seguir buenas prácticas:
-
-```js
-const express = require('express');
-const server = express();
-const PORT = 3001;
-
-server.listen(PORT, () => {
-   console.log('Server raised in port: ' + PORT);
-});
-```
-
-¡Acabas de crear tu servidor con Express! 😎
+-  Caperta **`utils`** con todo lo que tiene dentro.
+-  Archivo **`/controllers/handleFavorites.js`**.
+-  Archivo **`/controllers/login.js`**.
 
 <br />
 
----
+### **👩‍💻 EJERCICIO 01 | POST USER**
 
-### **👩‍💻 EJERCICIO 2 | GET getCharById**
+Dirígete a tu carpeta **controllers**:
 
-En este ejercicio construiremos la nueva versión de este controlador para que nos sirva con **express**. Dirígete al archivo **`getCharById.js`** y elimina todo el contenido que hay dentro de él.
+1. Crea un nuevo archivo con el nombre **`postUser.js`**.
 
-1. Crea una constante llamada **`URL`** y guarda lo siguiente: "**https://rickandmortyapi.com/api/character/**".
+2. Dentro de este archivo tendrás que importar tu modelo **User**.
 
-2. Crea una función con el nombre **`getCharById`** y expórtala. Recibe por parámetro a los objetos **`req`** y **`res`**.
+> [**NOTA**]: deberás importar este modelo de tu archivo **`DB_connection`** ya que desde allí está activo dentro de tu base de datos.
 
-3. Dentro de la función haz una petición a la API a partir del **id** que recibes por **`Params`**.
+3. Crea una función llamada **`postUser`** y expórtala. Esta función debe recibir por parámetro los objetos **`req`** y **`res`**. Además, esta función es asincrónica, ¡por lo que deberás trabajar con promesas o async await!
 
-> [**NOTA**]: no olvides importar **`axios`**.
+4. Dentro de la función deberás recibir un **email** y una **password** por **`Body`**.
 
-4. En el caso de que todo salga OK y se encuentre a un personaje, devuelve un JSON con las propiedades: **id**, **status**, **name**, **species**, **origin**, **image** y **gender**.
+5. Una vez recibido, deberás validar que realmente hayas recibido ambos y que no sean, por ejemplo, un string vacío. En el caso de no recibir alguno de los dos deberás responder con un **`status 400`** y devolver un mensaje que diga: **"_Faltan datos_"**.
 
-5. En el caso de que todo salga OK pero no se encuentre a un personaje, devuelve un mensaje con **status 404** que diga _Not fount_.
+6. En el caso de si recibir ambos datos deberás guardarlos dentro de tu modelo. Una vez realizado responde con el usuario guardado.
 
-6. Si hay un error debes responder con un status 500, y un texto con la propiedad **`message`** de **error**.
+> [**NOTA**]: puedes utilizar el método **`findOrCreate`**.
+
+> [**NOTA**]: en el caso de haber un error responde con **`status 500`** y el mensaje del error.
 
 </br>
 
 ---
 
-### **👩‍💻 EJERCICIO 3 | GET login**
+### **👩‍💻 EJERCICIO 02 | LOGIN**
 
-En este ejercicio construiremos un controlador que validará que el usuario que se está logeando tenga permiso. Para definir quienes tendrán permisos ve a tu carpeta **utils** y crea un archivo llamado **`users.js`**. Aquí solo deberas exportar un arrgelo con un solo objeto. Este objeto debe tener esta estructura:
+Ahora si crearemos un controlador que valide la información de nuestra base de datos. Elimina por completo la carpeta **utils**.
+
+1. Crea un archivo llamado **`login.js`**. Dentro de este archivo deberás importar tu modelo **User**.
+
+2. Crea una función llamada **`login`** la cual reciba por parámetro los objetos **`req`** y **`res`**. No olvides exportarla.
+
+3. Recibiras por **`Query`** los datos **email** y **password**.
+
+4. En el caso de no recibir alguno de los datos, responde con un **`status 400`** y el mensaje **"_Faltan datos_"**.
+
+5. Si ambos datos llegan correctamente tendrás que buscar aquel usuario que tenga el mismo email que recibiste anteriormente. En el caso de no encontrarlo responde con un **`status 404`** y el mensaje **"_Usuario no encontrado_"**.
+
+6. En el caso de encontrar a un usuario con ese mismo email solo tendrás ahora que comparar si su **password** es igual a la **password** que recibiste anteriormente. En el caso de no serlo responde con un **`status 403`** y un mensaje que diga **"_Contraseña incorrecta_"**.
+
+7. En el caso de que las contraseñas si coincidan, responde con el objeto:
 
 ```js
-module.exports = [{email: /*Tu email*/, password: /*Tu password*/}];
+{
+   access: true;
+}
 ```
 
-1. Dentro de tu carpeta **controllers** crea un archivo llamado **`login.js`**. Dentro de este deberás crear y exportar una función que recibirá por parámetro a los objetos **`req`** y **`res`**.
+> [**NOTA**]: en el caso de haber un error responde con **`status 500`** y el mensaje del error.
 
-2. Deberás obtener los datos **email** y **password** que recibes mediante **`Query`**. Una vez hecho esto, importa tu arreglo de usuarios y verifica si dentro de ese arreglo hay un usuario que coincida tanto su email y su contraseña con los que recibes por **`Query`**.
-
-3. En el caso de que haya un usuario que cumpla esa condición, entonces debes devolver una respuesta con **status 200**, y, en formato JSON, un objeto con una propiedad **access: `true`**. Caso contrario devuelve lo mismo pero con la propiedad **access: `false`**.
-
-<br />
+</br>
 
 ---
 
-### **👩‍💻 EJERCICIO 4 | POST & DELETE favorites**
+### **👩‍💻 EJERCICIO 03 | POST FAV**
 
-Dentro de tu carpeta **controllers** crea un archivo con el nombre **`handleFavorites.js`**. Dentro de este archivo deberás declarar un **arreglo vacío** llamado **`myFavorites`**.
+1. Crea un nuevo archivo llamado **`postFav.js`**. Dentro de este archivo deberás importar tu modelo **Favorite**.
 
-> [**NOTA**]: es importante que **NO** declares este arreglo como constante ya que lo modificaremos.
+2. Crea una función llamada **`postFav`** la cual reciba por parámetro los objetos **`req`** y **`res`**.
 
-1. Crea una función llamada **`postFav`** que reciba por parámetro los objetos **`req`** y **`res`**.
+3. Deberás recibir las propiedades **name**, **origin**, **status**, **image**, **species** y **gender** por **`Body`**.
 
-2. Agrega en tu arreglo de favoritos el personaje que estarás recibiendo por **`Body`**.
+4. Valida que todos los datos estén llegando correctamente. Caso contrario responde con un **`status 401`** y el mensaje **"_Faltan datos_"**.
 
-3. Finalmente devuelve tu arreglo de favoritos en formato JSON.
+5. Si todos los datos llegan como corresponde, guarda tu personaje en la base de datos.
 
-4. Crea una función llamada **`deleteFav`** que reciba por parámetro los objetos **`req`** y **`res`**.
+6. Una vez guardado, busca todos los personajes favoritos guardados en tu base de datos y responde con ese arreglo.
 
-5. Filtra a tus personajes favoritos de manera que elimines aquel que tiene el mismo **id** que recibes por **`Params`**.
+> [**NOTA**]: puedes utilizar el método **`findOrCreate`**.
 
-6. Finalmente devuelve tu arreglo de favoritos en formato JSON.
+> [**NOTA**]: en el caso de haber un error responde con **`status 500`** y el mensaje del error.
 
-7. Exporta ambas funciones.
-
-<br />
+</br>
 
 ---
 
-### **👩‍💻 EJERCICIO 5 | Rutas**
+### **👩‍💻 EJERCICIO 04 | DELETE FAV**
 
-Dirígete a la carpeta **routes** y crea un archivo con el nombre **`index.js`**. Dentro de este deberás importar todos tus controladores. También deberás importar las función **`Router`** de **express**. Crea una ruta para cada controlador con los siguientes paths:
+1. Crea un nuevo archivo con el nombre **`deleteFav.js`**. Dentro de este archivo tendrás que importar tu modelo **Favorite**.
 
--  GET **`getCharById`**: "/character/:id"
--  GET **`login`**: "/login"
--  POST **`postFav`**: "/fav"
--  DELETE **`deleteFav`**: "/fav/:id"
+2. Crea una función con el nombre **`deleteFav`** y expórtala. Esta función debes recibir por parámetro los objetos **`req`** y **`res`**.
 
-Finalmente exporta tu router.
+3. Recibirás un **id** por parámetro. Tendrás que eliminar este personaje de tu tabla de favoritos.
 
-<br />
+4. Finalmente responde con una arreglo que contenga a todos tus personajes favoritos.
 
----
+> [**NOTA**]: puedes utilizar el query: **`destroy`**.
 
-### **👩‍💻 EJERCICIO 6 | Middlewares**
+> [**NOTA**]: en el caso de haber un error responde con **`status 500`** y el mensaje del error.
 
-Dirígete al archivo **`index.js`** en el que tienes tu servidor. Aquí deberás:
-
-1. Importar tu router.
-
-2. Copia este middleware en tu servidor:
-
-   ```js
-   server.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header(
-         'Access-Control-Allow-Headers',
-         'Origin, X-Requested-With, Content-Type, Accept'
-      );
-      res.header(
-         'Access-Control-Allow-Methods',
-         'GET, POST, OPTIONS, PUT, DELETE'
-      );
-      next();
-   });
-   ```
-
-3. Crea un middleware que ejecute a **`express.json()`**.
-
-4. Crea un middleware que agregue el string "**`/rickandmorty`**" antes de cada una de tus rutas.
-
-<br />
+</br>
 
 ---
 
-### **👩‍💻 EJERCICIO 7 | Back & Front**
+### **👩‍💻 EJERCICIO 05 | Update routes**
 
-Llegó el momento para conectar nuestro nuevo servidor con nuestro Front-End. Para este ejercicio simplemente tendrás que reemplazar código de tu Front-End por los distintos snippets que te presentaremos a continuación. Para esto dirígete a tu carpeta **Client**.
+Dirígete a tu archivo **`/routes/index.js`**. Dentro de este tendrás que importar tus nuevos controladores y aplicarlos en las rutas correspondientes. Las nuevas rutas deben ser las siguientes:
 
-1. Dirígete a tu archivo **`App.js`** y busca tu función **`login`**. Elimina por completo esta función, ya que la reemplazaremos con esta:
+-  **GET** **`/login`**
+-  **POST** **`/login`**
+-  **POST** **`/fav`**
+-  **DELETE** **`/fav/:id`**
 
-   ```js
-   function login(userData) {
-      const { email, password } = userData;
-      const URL = 'http://localhost:3001/rickandmorty/login/';
-      axios(URL + `?email=${email}&password=${password}`).then(({ data }) => {
-         const { access } = data;
-         setAccess(data);
-         access && navigate('/home');
-      });
-   }
-   ```
+> [**NOTA**]: la única ruta que no se modifica es **`getCharById`**.
 
-2. Ahora conectaremos nuestra ruta **postFav**. Para esto dirígete a tu archivo **`actions.js`** y reemplaza tu función addFav. Luego dirígete a tu **`reducer`** y reemplaza tu caso "ADD_FAV".
+</br>
 
-   ```js
-   import axios from "axios";
+---
 
-   // ACTION | addFav
-   export const addFav = (character) => {
-      const endpoint = 'http://localhost:3001/rickandmorty/fav';
-      return (dispatch) => {
-         axios.post(endpoint, character).then(({ data }) => {
-            return dispatch({
-               type: 'ADD_FAV',
-               payload: data,
-            });
-         });
-      };
-   };
+### **👩‍💻 EJERCICIO 06 | Usuario de prueba**
 
-   // REDUCER | ADD_FAV
-   case 'ADD_FAV':
-         return { ...state, myFavorites: payload, allCharacters: payload };
-   ```
+Antes de ir a probar nuestra aplicación tendremos que crear un usuario en nuestra base de datos.
 
-> [**NOTA**]: debes importar **axios**.
+Lo normal es que en nuestro Front-End exista un formulario **`sign up`** o **`registrate`**, pero nosotros no tenemos un (aún 😏).
 
-3. Por último nos queda conectar nuestra ruta **deleteFav**. Para esto dirígete a tu archivo **`actions.js`** y reemplaza tu función removeFav. Luego dirígete a tu **`reducer`** y reemplaza tu caso "REMOVE_FAV".
+Tendremos que crear un usuario manualemente. Para esto abre tu **Cliente API** favorito. Puede ser, por ejemplo:
 
-   ```js
-   // ACTION | removeFav
-   export const removeFav = (id) => {
-      const endpoint = 'http://localhost:3001/rickandmorty/fav/' + id;
-      return (dispatch) => {
-         axios.delete(endpoint).then(({ data }) => {
-            return dispatch({
-               type: 'REMOVE_FAV',
-               payload: data,
-         });
-         });
-      };
-   };
+-  [**Thunder Client**](https://www.thunderclient.com/)
+-  [**Insomnia**](https://www.postman.com/)
+-  [**Postman**](https://insomnia.rest/download)
 
-   // REDUCER | REMOVE_FAV
-   case 'REMOVE_FAV':
-         return { ...state, myFavorites: payload };
-   ```
+1. Has un request de tipo **POST** a la ruta **`http://localhost:3001/rickandmorty/login`**.
+
+2. Tendrás que enviar por **BODY** los datos: **`email`** y **`password`**.
+
+</br>
+
+---
+
+<div align="center">
+
+## **😁 ¡FELICITACIONES! 😁**
+
+</div>
+
+😎 Acabas de finalizar la homework integradora del bootcamp. Tu aplicación está lista para ser utilizada.
+
+🤓 Por supuesto que hay muchas cosas que se pueden mejorar y cosas nuevas que se pueden crear. Con todo lo que has aprendido hasta ahora ya eres capaz de continuar, con un poco de esfuerzo y autonomía, mejorando este proyecto.
+
+🔎 Ahora queremos invitarte a que hagas un deploy de tu proyecto. Te compartimos nuestra cápsula de deploy...
+
+<div align="center">
+   <a href="https://rise.articulate.com/share/YKtorcVy0_ch_T7ETfudX4olPcYcXE6o#/">
+      <img src="./logo.png" alt="" width="50%" style="border-radius: 20vw;" />
+   </a>
+</div>
+
+> [**NOTA**]: has click sobre la imagen.
+
+</br>
+
+---
+
+## **📌 EXTRA CREDIT**
+
+1. El primer ejercicio **`extra`** que te invitamos a desarrollar es un formulario del lado Front-End que le permita a un usuario registrarse en tu aplicación. Estos datos se guardarán automáticamente en la base de datos.
+
+Este es un gran desafío, porque no solo tendrás que conectar tu Servidor con el Cliente, sino que también tendrás que pensar en una lógica del lado Front-End para que el usuario pueda cambiar de vista para poder logearse, y sin que aún tenga acceso a la app.
+
+</br >
+
+2. Algunos de los tests que realizaste en el módulo 3 ya no te serviran con estas nuevas rutas. Por lo tanto puedes intentar volver a realizar los tests, pero con las nuevas rutas.
